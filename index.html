@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGBH - Monitoramento de Bacias Hidrográficas do DF</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!-- Barra de Navegação -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <img src="img/logo-sigbh.png" alt="SIGBH" height="40">
+            SIGBH
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#mapa">Mapa Interativo</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#bacias">Bacias do DF</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#alertas">Alertas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#sobre">Sobre</a>
+                </li>
+            </ul>
+            <div class="d-flex">
+                <button class="btn btn-outline-light me-2">Acesso Restrito</button>
+                <button class="btn btn-light">Cadastre-se</button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<header class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1>Monitoramento Inteligente das Bacias Hidrográficas do DF</h1>
+                <p class="lead">Sistema integrado de gestão com alertas em tempo real sobre qualidade da água, desmatamento e conformidade ambiental.</p>
+                <div class="d-flex gap-2">
+                    <a href="#mapa" class="btn btn-primary btn-lg">Explorar Mapa</a>
+                    <a href="#alertas" class="btn btn-outline-light btn-lg">Ver Alertas</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="map-preview">
+                    <img src="img/mapa-df-bacias.png" alt="Bacias Hidrográficas do DF" class="img-fluid rounded shadow">
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Seção de Bacias Principais -->
+<section id="bacias" class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Bacias Hidrográficas do Distrito Federal</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="img/bacia-paranoa.jpg" class="card-img-top" alt="Bacia do Paranoá">
+                    <div class="card-body">
+                        <h5 class="card-title">Bacia do Paranoá</h5>
+                        <p class="card-text">Principal bacia do DF, abrangendo o Lago Paranoá e seus afluentes.</p>
+                        <div class="alert-status">
+                            <span class="badge bg-warning">12 alertas</span>
+                            <span class="badge bg-danger">3 críticos</span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a href="#" class="btn btn-outline-primary">Explorar</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="img/bacia-sao-bartolomeu.jpg" class="card-img-top" alt="Bacia do São Bartolomeu">
+                    <div class="card-body">
+                        <h5 class="card-title">Bacia do São Bartolomeu</h5>
+                        <p class="card-text">Importante bacia que corta a região leste do DF.</p>
+                        <div class="alert-status">
+                            <span class="badge bg-warning">8 alertas</span>
+                            <span class="badge bg-danger">1 crítico</span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a href="#" class="btn btn-outline-primary">Explorar</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="img/bacia-descoberto.jpg" class="card-img-top" alt="Bacia do Descoberto">
+                    <div class="card-body">
+                        <h5 class="card-title">Bacia do Descoberto</h5>
+                        <p class="card-text">Responsável por parte do abastecimento de água do DF.</p>
+                        <div class="alert-status">
+                            <span class="badge bg-warning">5 alertas</span>
+                            <span class="badge bg-success">Estável</span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a href="#" class="btn btn-outline-primary">Explorar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mapa Interativo -->
+<section id="mapa" class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Mapa Interativo das Bacias</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        Filtros
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">Bacia Hidrográfica</label>
+                            <select class="form-select">
+                                <option selected>Todas as bacias</option>
+                                <option>Paranoá</option>
+                                <option>São Bartolomeu</option>
+                                <option>Descoberto</option>
+                                <option>Corumbá</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tipo de Alerta</label>
+                            <select class="form-select">
+                                <option selected>Todos os alertas</option>
+                                <option>Qualidade da Água</option>
+                                <option>Desmatamento</option>
+                                <option>APP</option>
+                                <option>Outros</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Período</label>
+                            <select class="form-select">
+                                <option selected>Últimos 30 dias</option>
+                                <option>Últimos 7 dias</option>
+                                <option>Últimos 90 dias</option>
+                                <option>Último ano</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary w-100">Aplicar Filtros</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        Legenda
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><span class="legend-color bg-success"></span> Situação normal</li>
+                            <li class="mb-2"><span class="legend-color bg-warning"></span> Alerta moderado</li>
+                            <li class="mb-2"><span class="legend-color bg-danger"></span> Alerta crítico</li>
+                            <li class="mb-2"><span class="legend-color bg-primary"></span> Ponto de monitoramento</li>
+                            <li class="mb-2"><span class="legend-color bg-info"></span> Área protegida</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="map-container">
+                    <div id="map" style="height: 600px; border-radius: 8px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Seção de Alertas -->
+<section id="alertas" class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Alertas Ambientais Recentes</h2>
+        <div class="row">
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 border-danger">
+                    <div class="card-header bg-danger text-white">
+                        Crítico
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Redução de vegetação em APP</h5>
+                        <p class="card-text">Bacia do Paranoá - Região do Lago Norte</p>
+                        <div class="alert-metrics">
+                            <div class="metric">
+                                <span class="metric-label">Área afetada:</span>
+                                <span class="metric-value">12.5 ha</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Redução:</span>
+                                <span class="metric-value">-34%</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Data:</span>
+                                <span class="metric-value">18/05/2025</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a href="#" class="btn btn-sm btn-outline-danger">Detalhes</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 border-warning">
+                    <div class="card-header bg-warning text-dark">
+                        Moderado
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Alteração na qualidade da água</h5>
+                        <p class="card-text">Bacia do São Bartolomeu - Córrego do Urubu</p>
+                        <div class="alert-metrics">
+                            <div class="metric">
+                                <span class="metric-label">pH:</span>
+                                <span class="metric-value">5.8</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Turbidez:</span>
+                                <span class="metric-value">145 NTU</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Data:</span>
+                                <span class="metric-value">17/05/2025</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a href="#" class="btn btn-sm btn-outline-warning">Detalhes</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 border-success">
+                    <div class="card-header bg-success text-white">
+                        Resolvido
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Assoreamento controlado</h5>
+                        <p class="card-text">Bacia do Descoberto - Represa do Descoberto</p>
+                        <div class="alert-metrics">
+                            <div class="metric">
+                                <span class="metric-label">Situação:</span>
+                                <span class="metric-value">Normalizada</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Ações:</span>
+                                <span class="metric-value">3 medidas</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Data:</span>
+                                <span class="metric-value">15/05/2025</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a href="#" class="btn btn-sm btn-outline-success">Detalhes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="#" class="btn btn-primary">Ver Todos os Alertas</a>
+        </div>
+    </div>
+</section>
+
+<!-- Seção de Sobre -->
+<section id="sobre" class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <h2>Sobre o SIGBH</h2>
+                <p>O Sistema Integrado de Gestão de Bacias Hidrográficas (SIGBH) é uma plataforma de monitoramento ambiental desenvolvida para o Distrito Federal, com foco na gestão sustentável dos recursos hídricos.</p>
+                <p>Utilizando dados de sensores, imagens de satélite e inteligência artificial, o sistema identifica alterações na qualidade da água, desmatamento em áreas de preservação permanente e outros riscos ambientais.</p>
+                <div class="features-list">
+                    <div class="feature">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Monitoramento em tempo real</span>
+                    </div>
+                    <div class="feature">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Alertas automáticos</span>
+                    </div>
+                    <div class="feature">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Dados históricos</span>
+                    </div>
+                    <div class="feature">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Relatórios personalizados</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Tecnologias Utilizadas</h5>
+                        <div class="tech-badges">
+                            <span class="badge bg-primary">Google Earth Engine</span>
+                            <span class="badge bg-secondary">PostgreSQL/PostGIS</span>
+                            <span class="badge bg-success">Spring Boot</span>
+                            <span class="badge bg-danger">Leaflet.js</span>
+                            <span class="badge bg-warning text-dark">Chart.js</span>
+                            <span class="badge bg-info">Bootstrap</span>
+                        </div>
+                        <div class="mt-3">
+                            <h6>Fontes de Dados:</h6>
+                            <ul>
+                                <li>Imagens Sentinel-2 (ESA)</li>
+                                <li>Sensores ambientais (INMET, ANA)</li>
+                                <li>Cadastro Ambiental Rural (CAR)</li>
+                                <li>Monitoramento próprio</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Rodapé -->
+<footer class="bg-dark text-white py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4 mb-md-0">
+                <h5>SIGBH</h5>
+                <p>Sistema Integrado de Gestão de Bacias Hidrográficas do Distrito Federal</p>
+                <p>Versão 1.0 - Maio 2025</p>
+            </div>
+            <div class="col-md-4 mb-4 mb-md-0">
+                <h5>Parceiros</h5>
+                <ul class="list-unstyled">
+                    <li>Secretaria de Meio Ambiente - DF</li>
+                    <li>Agência Reguladora de Águas</li>
+                    <li>Universidade de Brasília</li>
+                    <li>Embrapa Cerrados</li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Contato</h5>
+                <address>
+                    <p>E-mail: contato@sigbh.df.gov.br</p>
+                    <p>Telefone: (61) 99999-9999</p>
+                </address>
+                <div class="social-links">
+                    <a href="#" class="text-white me-2"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-white me-2"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="text-white me-2"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="text-white"><i class="bi bi-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr class="my-4">
+        <div class="text-center">
+            <p class="mb-0">© 2025 SIGBH - Todos os direitos reservados</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/map.js"></script>
+</body>
+</html>
